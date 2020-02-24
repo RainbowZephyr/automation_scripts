@@ -3,7 +3,7 @@
 @@minimum_members = 3
 @@maximum_members = 5
 
-@ids_indexes = [2,4,6] # Columns in teams file which correspond to ids
+@ids_indexes = [2,4,6,8,10] # Columns in teams file which correspond to ids
 @ids_map = {}
 @teams_map = {}
 @incomplete_teams = {}
@@ -23,7 +23,7 @@ def team_management(print, fill)
     lines = File.readlines(@@teams_file)
     found_table = {}
 
-    check_duplicate_students(false)
+    check_duplicate_students(true)
 
     # Check for correct team size
     for line in lines do
@@ -70,7 +70,7 @@ def check_duplicate_students(print)
                     next
                 end
 
-                if(fields[field].strip.include?(id))
+                if(fields[field].strip == (id))
                     if !found
                         @ids_map[id] = true
                         found = true
@@ -85,7 +85,7 @@ def check_duplicate_students(print)
     if print
         for k,v in @ids_map do
             if v != true
-                puts("ID #{k} no submission")
+                puts("ID `#{k}` no submission")
             end
         end
 
@@ -151,6 +151,12 @@ def random_assign(write)
             @ids_map[member] = true
         end
     end
+
+    no_submissions = (@ids_map.select {|k,v| !v}).keys
+    for id in no_submissions do
+        puts("Cannot assign student `#{id}` to team")
+    end
+
 
     if write
         check_duplicate_students(true)
